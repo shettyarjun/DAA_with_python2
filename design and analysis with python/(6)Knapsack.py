@@ -1,32 +1,35 @@
-def knapsack_solve(weights, values, capacity, N):
-    dp = [[0] * (capacity + 1) for _ in range(N + 1)]
-    
-    # Fill the dynamic programming table
-    for i in range(1, N + 1):
-        for w in range(1, capacity + 1):
-            if weights[i] <= w:
-                dp[i][w] = max(dp[i - 1][w], values[i] + dp[i - 1][w - weights[i]])
+def knapsack(weights, values, capacity):
+    n = len(weights)
+    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for w in range(capacity + 1):
+            if weights[i - 1] <= w:
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1])
             else:
                 dp[i][w] = dp[i - 1][w]
-    
-    # Backtrack to find the selected items
-    selected = []
-    i, w = N, capacity
+
+    optimal_value = dp[n][capacity]
+
+    selected_items = []
+    i, w = n, capacity
     while i > 0 and w > 0:
         if dp[i][w] != dp[i - 1][w]:
-            selected.append(i)
-            w -= weights[i]
+            selected_items.append(i)
+            w -= weights[i - 1]
         i -= 1
 
-    return dp[N][capacity], selected[::-1]  # Reversing to get the correct sequence
+    selected_items.reverse()
+
+    return optimal_value, selected_items
 
 def main():
     n = int(input("Enter number of items: "))
-    weights = [0] + list(map(int, input("Enter weights of items: ").split()))
-    values = [0] + list(map(int, input("Enter values of items: ").split()))
+    weights = list(map(int, input("Enter weights of items: ").split()))
+    values = list(map(int, input("Enter values of items: ").split()))
     capacity = int(input("Enter knapsack capacity: "))
     
-    optimal_value, selected_items = knapsack_solve(weights, values, capacity, n)
+    optimal_value, selected_items = knapsack(weights, values, capacity)
 
     print("Optimal value:", optimal_value)
     print("Selected items:", " ".join(map(str, selected_items)))
