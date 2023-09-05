@@ -1,43 +1,48 @@
 class Sales:
     def __init__(self):
-        self.cost, self.memo = [], []
-    
-    def dp(self, city, n, mask):
-        if mask == (1 << n) - 1:
-            return self.cost[city][0]
-        if self.memo[city][mask] != -1:
-            return self.memo[city][mask]
-        ans = float('inf')
-        for i in range(n):
-            if not (mask & (1 << i)) and self.cost[city][i]:
-                ans = min(ans, self.cost[city][i] + self.dp(i, n, mask | (1 << i)))
-        self.memo[city][mask] = ans
-        return ans
-    
-    def path(self, city, n, mask):
-        if mask == (1 << n) - 1:
-            return [city, 0]
-        next_city, min_cost = -1, float('inf')
-        for i in range(n):
-            if not (mask & (1 << i)) and self.cost[city][i]:
-                cost = self.cost[city][i] + self.dp(i, n, mask | (1 << i))
-                if cost < min_cost:
-                    min_cost, next_city = cost, i
-        return [city] + self.path(next_city, n, mask | (1 << next_city))
-    
-    def solve(self, n):
-        self.memo = [[-1] * (1 << n) for _ in range(n)]
-        optimal_cost = self.dp(0, n, 1)
-        optimal_path = self.path(0, n, 1)
-        return optimal_cost, optimal_path
-    
+        self.cost_opt = 0
+        self.a = [[0 for _ in range(100)] for _ in range(100)]
+        self.visit = [0] * 100
+
+    def mincost_opt(self, city, n):
+        self.visit[city] = 1
+        print(city, "-->", end=" ")
+        ncity = self.least_opt(city, n)
+        if ncity == 999:
+            ncity = 1
+            print(ncity)
+            self.cost_opt += self.a[city][ncity]
+            return
+        self.mincost_opt(ncity, n)
+
+    def least_opt(self, c, n):
+        nc = 999
+        min_val = 999
+        kmin = 999
+        for i in range(1, n + 1):
+            if self.a[c][i] != 0 and self.visit[i] == 0:
+                if self.a[c][i] < min_val:
+                    min_val = self.a[c][i]
+                    kmin = self.a[c][i]
+                    nc = i
+        if min_val != 999:
+            self.cost_opt += kmin
+        return nc
+
 def main():
     x = Sales()
-    n = int(input())
-    x.cost = [list(map(int, input().split())) for _ in range(n)]
-    cost, path = x.solve(n)
-    print("Path:", " -> ".join(map(str, path)))
-    print("Cost:", cost)
+    n = int(input("Enter the number of cities: "))
+    print("Enter the cost matrix:")
+    for i in range(1, n + 1):
+        row = list(map(int, input().split()))
+        for j in range(1, n + 1):
+            x.a[i][j] = row[j - 1]
+            x.visit[i] = 0
+  
+    print("Optimal solution:")
+    print("The path is:")
+    x.mincost_opt(1, n)
+    print("Minimum cost is", x.cost_opt)
 
 if __name__ == "__main__":
     main()
