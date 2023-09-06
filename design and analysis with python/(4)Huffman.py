@@ -2,20 +2,26 @@ import heapq
 
 class HuffmanNode:
     def __init__(self, char, freq):
-        self.char, self.freq, self.left, self.right = char, freq, None, None
+        self.char = char
+        self.freq = freq
+        self.left = None
+        self.right = None
 
     def __lt__(self, other):
         return self.freq < other.freq if isinstance(other, HuffmanNode) else NotImplemented
 
 def build_huffman_tree(chars, freqs):
-    heap = [HuffmanNode(c, f) for c, f in zip(chars, freqs)]
+    heap = [HuffmanNode(chars[i], freqs[i]) for i in range(len(chars))]
     heapq.heapify(heap)
-    
+
     while len(heap) > 1:
-        combined = HuffmanNode(None, heap[0].freq + heap[1].freq)
-        combined.left, combined.right = heapq.heappop(heap), heapq.heappop(heap)
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        combined = HuffmanNode(None, left.freq + right.freq)
+        combined.left = left
+        combined.right = right
         heapq.heappush(heap, combined)
-    
+
     return heapq.heappop(heap)
 
 def build_huffman_codes(root, code='', codes={}):
@@ -35,7 +41,11 @@ def encode_decode_string(encoded, root):
     return decoded
 
 def get_input(count, data_type):
-    return [data_type(input(f"Enter {'char' if data_type == str else 'prob'} {i+1}: ")) for i in range(count)]
+    inputs = []
+    for i in range(count):
+        val = data_type(input(f"Enter {'char' if data_type == str else 'prob'} {i + 1}: "))
+        inputs.append(val)
+    return inputs
 
 def main():
     n = int(input("Enter number of chars: "))
