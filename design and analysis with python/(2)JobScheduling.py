@@ -20,7 +20,12 @@ def schedule_jobs(jobs, T):
     print("Total Profit:", profit)
 
 if __name__ == "__main__":
-    num_jobs = int(input("Enter number of jobs: "))
-    jobs = [Job(*map(int, input(f"Task ID, Deadline, Profit for Job {i + 1}: ").split())) for i in range(num_jobs)]
+    jobs = []
+    num_jobs = int(input("Enter the number of jobs: "))
+
+    for i in range(num_jobs):
+        task_id, deadline, profit = map(int, input(f"Enter Task ID, Deadline, Profit for Job {i + 1}: ").split())
+        jobs.append((task_id, deadline, profit))
+
     deadline_limit = int(input("Enter Deadline Limit: "))
     schedule_jobs(jobs, deadline_limit)
