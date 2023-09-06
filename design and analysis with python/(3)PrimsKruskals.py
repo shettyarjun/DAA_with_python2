@@ -1,7 +1,9 @@
-def Prims(n, cost):
-    selected = [0] * n  # Keeps track of selected vertices
-    selected[0] = 1
-    
+def prims_mst(n, cost):
+    selected = [False] * n
+    selected[0] = True
+    mincost = 0
+
+    print("Minimum Spanning Tree Edges using Prim's Algorithm:")
     for _ in range(n - 1):
         minimum, x, y = float('inf'), 0, 0
         for i in range(n):
@@ -9,32 +11,32 @@ def Prims(n, cost):
                 for j in range(n):
                     if not selected[j] and cost[i][j] < minimum:
                         minimum, x, y = cost[i][j], i, j
-        print(x + 1, '-->', y + 1, ':', minimum)  # Print selected edge
-        selected[y] = 1
+        selected[y] = True
+        mincost += minimum
+        print(f"Edge: {x + 1} --> {y + 1} : Cost = {minimum}")
 
-def Kruskals(n, cost):
-    parent = list(range(n))  # Initialize each vertex as its own parent
-    edges = [(i, j, cost[i][j]) for i in range(n) for j in range(i + 1, n) if cost[i][j] > 0]
-    edges.sort(key=lambda edge: edge[2])  # Sort edges by weight
-    
+    print("Minimum Cost using Prim's Algorithm:", mincost)
+
+def kruskals_mst(n, cost):
+    edges = sorted([(cost[i][j], i, j) for i in range(n) for j in range(i + 1, n) if cost[i][j] != 0])
+    parent = list(range(n))
     mincost = 0
-    for a, b, weight in edges:
-        if parent[a] != parent[b]:  # Check if adding the edge forms a cycle
+
+    print("\nMinimum Spanning Tree Edges using Kruskal's Algorithm:")
+    for weight, a, b in edges:
+        if parent[a] != parent[b]:
             mincost += weight
-            print("Edge:", a + 1, "-->", b + 1, "cost:", weight)  # Print selected edge
+            print(f"Edge: {a + 1} --> {b + 1} : Cost = {weight}")
             parent = [parent[b] if p == parent[a] else p for p in parent]
-    
-    print("Minimum cost =", mincost)
+
+    print("Minimum Cost using Kruskal's Algorithm:", mincost)
 
 def main():
     n = int(input("Enter the number of nodes: "))
     cost = [list(map(int, input().split())) for _ in range(n)]
 
-    print("Minimum Spanning Tree using Prim's Algorithm:")
-    Prims(n, cost)
-
-    print("\nMinimum Spanning Tree using Kruskal's Algorithm:")
-    Kruskals(n, cost)
+    prims_mst(n, cost)
+    kruskals_mst(n, cost)
 
 if __name__ == "__main__":
     main()
