@@ -1,33 +1,58 @@
-def prims_mst(n, cost):
-    selected, mincost = [0], 0
-    print("Minimum Spanning Tree Edges using Prim's Algorithm:")
-    for _ in range(n - 1):
-        x, y, minimum = 0, 0, float('inf')
-        for i in selected:
-            for j in range(n):
-                if j not in selected and cost[i][j] < minimum:
-                    x, y, minimum = i, j, cost[i][j]
-        selected.append(y)
-        mincost += minimum
-        print(f"Edge: {x + 1} --> {y + 1} : Cost = {minimum}")
-    print("Minimum Cost using Prim's Algorithm:", mincost)
+maxi = 9999999
+n = int(input("Enter the number of nodes: "))
 
-def kruskals_mst(n, cost):
-    edges = sorted((cost[i][j], i, j) for i in range(n) for j in range(i + 1, n) if cost[i][j])
-    parent, mincost = list(range(n)), 0
-    print("\nMinimum Spanning Tree Edges using Kruskal's Algorithm:")
-    for weight, a, b in edges:
+def prim_mst(n, cost):
+    selected = [False] * n
+    selected[0] = True
+
+    for _ in range(n - 1):
+        minimum = maxi
+        x = y = 0
+
+        for i in range(n):
+            if selected[i]:
+                for j in range(n):
+                    if not selected[j] and cost[i][j] and cost[i][j] < minimum:
+                        minimum = cost[i][j]
+                        x = i
+                        y = j
+
+        print(x, '-->', y, ':', cost[x][y])
+        selected[y] = True
+
+def kruskal_mst(n, cost):
+    edges = []
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if cost[i][j]:
+                edges.append((i, j, cost[i][j]))
+
+    edges.sort(key=lambda x: x[2])
+    parent = list(range(n))
+
+    mincost = 0
+    for edge in edges:
+        a, b, weight = edge
         if parent[a] != parent[b]:
             mincost += weight
-            print(f"Edge: {a + 1} --> {b + 1} : Cost = {weight}")
-            parent = [parent[b] if p == parent[a] else p for p in parent]
-    print("Minimum Cost using Kruskal's Algorithm:", mincost)
+            print("Edge:", a, '-->', b, ':', weight)
+            old_parent = parent[a]
+            new_parent = parent[b]
+            for i in range(n):
+                if parent[i] == old_parent:
+                    parent[i] = new_parent
 
-def main():
-    n = int(input("Enter the number of nodes: "))
-    cost = [list(map(int, input().split())) for _ in range(n)]
-    prims_mst(n, cost)
-    kruskals_mst(n, cost)
+    print("Minimum cost =", mincost)
 
-if __name__ == "__main__":
-    main()
+cost = [[int(x) for x in input().split()] for _ in range(n)]
+
+for i in range(n):
+    for j in range(n):
+        if cost[i][j] == 0:
+            cost[i][j] = maxi
+
+print("Minimum Spanning Tree using Prim's Algorithm:")
+prim_mst(n, cost)
+print("\nMinimum Spanning Tree using Kruskal's Algorithm:")
+kruskal_mst(n, cost)
