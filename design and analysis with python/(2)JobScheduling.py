@@ -25,7 +25,8 @@ if __name__ == "__main__":
 
     for i in range(num_jobs):
         task_id, deadline, profit = map(int, input(f"Enter Task ID, Deadline, Profit for Job {i + 1}: ").split())
-        jobs.append((task_id, deadline, profit))
+        job = Job(task_id, deadline, profit)
+        jobs.append(job)
 
     deadline_limit = int(input("Enter Deadline Limit: "))
     schedule_jobs(jobs, deadline_limit)
