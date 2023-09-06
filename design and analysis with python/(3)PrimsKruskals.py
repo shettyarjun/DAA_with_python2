@@ -18,7 +18,13 @@ def prims_mst(n, cost):
     print("Minimum Cost using Prim's Algorithm:", mincost)
 
 def kruskals_mst(n, cost):
-    edges = sorted([(cost[i][j], i, j) for i in range(n) for j in range(i + 1, n) if cost[i][j] != 0])
+    edges = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            if cost[i][j] != 0:
+                edges.append((cost[i][j], i, j))
+    edges.sort()
+    
     parent = list(range(n))
     mincost = 0
 
@@ -27,7 +33,10 @@ def kruskals_mst(n, cost):
         if parent[a] != parent[b]:
             mincost += weight
             print(f"Edge: {a + 1} --> {b + 1} : Cost = {weight}")
-            parent = [parent[b] if p == parent[a] else p for p in parent]
+            temp = parent[a]
+            for i in range(n):
+                if parent[i] == temp:
+                    parent[i] = parent[b]
 
     print("Minimum Cost using Kruskal's Algorithm:", mincost)
 
@@ -40,3 +49,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
