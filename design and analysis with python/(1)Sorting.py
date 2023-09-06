@@ -64,7 +64,7 @@ def main():
 
     if choice == 1:
         arr = read_input()
-        merge_sort(arr)
+        arr = merge_sort(arr)
         print('Sorted Array:', arr)
         time_analysis(merge_sort, "Merge Sort")
     elif choice == 2:
