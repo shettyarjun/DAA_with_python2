@@ -35,7 +35,6 @@ def insertion_sort(arr):
 
 def read_input():
     n = int(input("Enter the number of TV Channels: "))
-    print("Enter the number of viewers for each TV Channel")
     return [int(input(f"Enter the number of viewers for TV Channel {i+1}: ")) for i in range(n)]
 
 def time_analysis(sorting_func, label_data):
