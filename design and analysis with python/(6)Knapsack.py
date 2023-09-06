@@ -1,38 +1,46 @@
-def knapsack(weights, values, capacity):
-    n = len(weights)
-    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
-
-    for i in range(1, n + 1):
-        for w in range(capacity + 1):
-            if weights[i - 1] <= w:
-                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1])
+def knapsack_solve(wt, val, W, N):
+    sol = [[0 for _ in range(W + 1)] for _ in range(N + 1)]
+    selected = [0] * (N + 1)
+    
+    for i in range(1, N + 1):
+        for j in range(1, W + 1):
+            if wt[i] > j:
+                sol[i][j] = sol[i - 1][j]
             else:
-                dp[i][w] = dp[i - 1][w]
+                sol[i][j] = max(sol[i - 1][j], sol[i - 1][j - wt[i]] + val[i])
 
-    optimal_value = dp[n][capacity]
+    print("The optimal solution is:", sol[N][W])
+    i, j = N, W
 
-    selected_items = []
-    i, w = n, capacity
-    while i > 0 and w > 0:
-        if dp[i][w] != dp[i - 1][w]:
-            selected_items.append(i)
-            w -= weights[i - 1]
+    while i > 0 and j > 0:
+        if sol[i][j] != sol[i - 1][j]:
+            selected[i] = 1
+            j -= wt[i]
         i -= 1
 
-    selected_items.reverse()
-
-    return optimal_value, selected_items
+    print("\nItems selected:")
+    for i in range(1, N + 1):
+        if selected[i] == 1:
+            print(i, end=" ")
+    print()
 
 def main():
-    n = int(input("Enter number of items: "))
-    weights = list(map(int, input("Enter weights of items: ").split()))
-    values = list(map(int, input("Enter values of items: ").split()))
-    capacity = int(input("Enter knapsack capacity: "))
-    
-    optimal_value, selected_items = knapsack(weights, values, capacity)
+    n = int(input("Enter number of elements: "))
+    wt = [0] * (n + 1)
+    val = [0] * (n + 1)
 
-    print("Optimal value:", optimal_value)
-    print("Selected items:", " ".join(map(str, selected_items)))
+    print("\nEnter weight of", n, "elements (separated by spaces):")
+    wt_input = input().split()
+    for i in range(1, n + 1):
+        wt[i] = int(wt_input[i - 1])
+
+    print("\nEnter values of", n, "elements (separated by spaces):")
+    val_input = input().split()
+    for i in range(1, n + 1):
+        val[i] = int(val_input[i - 1])
+
+    W = int(input("\nEnter knapsack capacity: "))
+    knapsack_solve(wt, val, W, n)
 
 if __name__ == "__main__":
     main()
